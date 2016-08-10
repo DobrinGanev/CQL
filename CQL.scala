@@ -28,12 +28,11 @@ object CQL {
     }
   }
 
-  def createTable(tableName: String, columns: String, primaryKey: String, sc: SparkContext) = {
+  def createTable(tableName: String, columns: List[String], primaryKey: String, sc: SparkContext) = {
     CassandraConnector(sc.getConf).withSessionDo { session =>
-      session.executeAsync("CREATE TABLE IF NOT EXISTS %s \n(%s, \nPRIMARY KEY (%s));".format(tableName, columns, primaryKey))
+      session.executeAsync("CREATE TABLE IF NOT EXISTS %s \n(%s, \nPRIMARY KEY (%s));".format(tableName,columns.mkString(",\n"),primaryKey))
     }
   }
-
 
   def queryExecute(sc: SparkContext, queryString: String) = {
     CassandraConnector(sc.getConf).withSessionDo { session =>
